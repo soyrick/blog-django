@@ -50,3 +50,4 @@ python manage.py runserver
 ```powershell
 python -m pytest
 ```
+#laputamadre
