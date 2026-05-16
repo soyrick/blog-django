@@ -1,0 +1,21 @@
+{% for post in posts %}
+  <article class="rounded-3xl border border-slate-800 bg-slate-900/90 shadow-2xl shadow-slate-950/20 transition duration-300 hover:-translate-y-0.5 hover:border-slate-700 hover:bg-slate-900">
+    <a href="{{ post.get_absolute_url }}" class="group block overflow-hidden rounded-t-3xl">
+      {% if post.cover_image %}
+        <img src="{{ post.cover_image.url }}" alt="{{ post.title }} cover" class="aspect-video w-full object-cover transition duration-500 group-hover:scale-105" />
+      {% else %}
+        <div class="aspect-video bg-slate-800 p-6 text-slate-400">No cover image</div>
+      {% endif %}
+    </a>
+    <div class="space-y-4 p-5">
+      <a href="{{ post.get_absolute_url }}" class="block text-lg font-semibold text-white transition hover:text-slate-100">{{ post.title }}</a>
+      <p class="max-h-20 overflow-hidden text-sm leading-6 text-slate-400">{{ post.content }}</p>
+      <div class="flex items-center justify-between text-sm text-slate-400">
+        <span>{{ post.author.email }}</span>
+        <span>{{ post.likes.count }} likes</span>
+      </div>
+    </div>
+  </article>
+{% empty %}
+  <p class="rounded-3xl border border-slate-800 bg-slate-900/80 p-6 text-slate-400">No posts yet. Create one or check back later.</p>
+{% endfor %}

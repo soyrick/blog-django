@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" x-data="{ darkMode: true }" x-bind:class="{ 'dark': darkMode }" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Community Blog{% endblock %}</title>
+  <script>tailwind.config = { darkMode: 'class' };</script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+  <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+</head>
+<body class="min-h-screen bg-slate-950 text-slate-100">
+  <div class="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800">
+    <header class="border-b border-slate-800 bg-slate-950/80 backdrop-blur-sm">
+      <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 text-sm text-slate-200 sm:px-6">
+        <a href="{% url 'blog:post_list' %}" class="font-semibold tracking-wide text-white">Blog Community</a>
+        <div class="flex items-center gap-3">
+          <button @click="darkMode = !darkMode" class="rounded-full border border-slate-700 bg-slate-900/80 px-3 py-2 transition hover:border-slate-500">
+            <span x-text="darkMode ? 'Light mode' : 'Dark mode'"></span>
+          </button>
+          {% if request.user.is_authenticated %}
+            <span class="hidden sm:inline">{{ request.user.email }}</span>
+            <a href="{% url 'blog:post_create' %}" class="rounded-full bg-slate-700 px-3 py-2 text-slate-100 transition hover:bg-slate-600">New post</a>
+            <a href="{% url 'accounts:logout' %}" class="rounded-full border border-slate-700 px-3 py-2 transition hover:border-slate-500">Logout</a>
+          {% else %}
+            <a href="{% url 'accounts:login' %}" class="rounded-full border border-slate-700 px-3 py-2 transition hover:border-slate-500">Login</a>
+            <a href="{% url 'accounts:register' %}" class="rounded-full bg-slate-700 px-3 py-2 text-slate-100 transition hover:bg-slate-600">Register</a>
+          {% endif %}
+        </div>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+      {% if messages %}
+        <div class="space-y-3 pb-4">
+          {% for message in messages %}
+            <div class="rounded-2xl border border-slate-700 bg-slate-900/80 px-4 py-3 text-sm text-slate-100">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+  <script src="{% static 'js/app.js' %}"></script>
+</body>
+</html>

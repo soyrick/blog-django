@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Feed - Community Blog{% endblock %}
+
+{% block content %}
+  <div class="mb-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+      <h1 class="text-3xl font-semibold text-white">Community feed</h1>
+      <p class="max-w-2xl text-slate-400">Explore the latest posts, interact with comments and likes, and keep scrolling to load more.</p>
+    </div>
+  </div>
+
+  <div id="post-feed" class="grid gap-6 sm:grid-cols-2">
+    {% include 'blog/post_list_items.html' %}
+  </div>
+
+  {% if page_obj.has_next %}
+    <div class="mt-8 rounded-3xl border border-slate-800 bg-slate-900/80 p-6 text-center text-slate-300" id="load-more-trigger" hx-get="?page={{ page_obj.next_page_number }}" hx-trigger="revealed" hx-swap="afterend" hx-indicator="#loading-indicator">
+      <div id="loading-indicator" class="htmx-indicator text-slate-400">Loading more posts...</div>
+    </div>
+  {% endif %}
+{% endblock %}

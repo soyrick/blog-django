@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}{{ object.title }} — Community Blog{% endblock %}
+
+{% block content %}
+  <article class="space-y-6 rounded-3xl border border-slate-800 bg-slate-900/90 p-6 shadow-2xl shadow-slate-950/20">
+    {% if object.cover_image %}
+      <img src="{{ object.cover_image.url }}" alt="{{ object.title }}" class="mb-6 aspect-video w-full rounded-3xl object-cover" />
+    {% endif %}
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div>
+        <h1 class="text-4xl font-semibold text-white">{{ object.title }}</h1>
+        <p class="mt-2 text-sm text-slate-400">By {{ object.author.email }} · {{ object.created_at|date:'F j, Y' }}</p>
+      </div>
+      <div class="flex flex-wrap items-center gap-3">
+        <div id="like-fragment">
+          {% include 'blog/partials/like_button.html' %}
+        </div>
+        {% if can_edit %}
+          <a href="{% url 'blog:post_update' slug=object.slug %}" class="rounded-full border border-slate-700 px-4 py-2 text-sm text-slate-100 transition hover:border-slate-500">Edit</a>
+          <a href="{% url 'blog:post_delete' slug=object.slug %}" class="rounded-full border border-rose-600 px-4 py-2 text-sm text-rose-200 transition hover:border-rose-500">Delete</a>
+        {% endif %}
+      </div>
+    </div>
+    <div class="whitespace-pre-line break-words text-slate-200">{{ object.content|linebreaks }}</div>
+    <section class="rounded-3xl border border-slate-800 bg-slate-950/80 p-6">
+      <h2 class="text-xl font-semibold text-white">Comments</h2>
+      <div id="comments" class="mt-4 space-y-4">
+        {% for comment in object.comments.all %}
+          {% include 'blog/partials/comment_item.html' %}
+        {% empty %}
+          <p class="text-sm text-slate-400">Be the first to leave a comment.</p>
+        {% endfor %}
+      </div>
+      {% if user.is_authenticated %}
+        <form hx-post="{% url 'blog:post_comment' slug=object.slug %}" hx-target="#comments" hx-swap="beforeend" class="mt-6 space-y-3">
+          {{ comment_form.as_p }}
+          <button type="submit" class="rounded-full bg-slate-700 px-6 py-2 text-sm text-white transition hover:bg-slate-600">Post comment</button>
+        </form>
+      {% else %}
+        <p class="mt-6 text-sm text-slate-400">Please <a href="{% url 'accounts:login' %}" class="text-slate-100 underline">log in</a> to comment.</p>
+      {% endif %}
+    </section>
+  </article>
+{% endblock %}

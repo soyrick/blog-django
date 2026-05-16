@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Delete post — Community Blog{% endblock %}
+
+{% block content %}
+  <div class="mx-auto max-w-3xl rounded-3xl border border-slate-800 bg-slate-900/90 p-6 shadow-2xl shadow-slate-950/20">
+    <h1 class="text-3xl font-semibold text-white">Delete post</h1>
+    <p class="mt-4 text-slate-400">Are you sure you want to delete "{{ object.title }}"? This action cannot be undone.</p>
+    <form method="post" class="mt-6 flex gap-3">
+      {% csrf_token %}
+      <button type="submit" class="rounded-full bg-rose-600 px-6 py-2 text-sm text-white transition hover:bg-rose-500">Delete</button>
+      <a href="{{ object.get_absolute_url }}" class="rounded-full border border-slate-700 px-6 py-2 text-sm text-slate-100 transition hover:border-slate-500">Cancel</a>
+    </form>
+  </div>
+{% endblock %}
