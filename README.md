@@ -34,6 +34,10 @@ python manage.py seed_blog
 python manage.py runserver
 ```
 
+## Carpeta de imágenes
+
+- Se creó la carpeta `core/static/img/imagenes/` para agregar imágenes de portada que luego pueden utilizarse en los blogs de prueba.
+
 ## Flujo esperado
 
 1. Ver posts públicos sin iniciar sesión.

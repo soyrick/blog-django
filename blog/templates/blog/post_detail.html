@@ -12,9 +12,17 @@
         <p class="mt-2 text-sm text-slate-400">By {{ object.author.email }} · {{ object.created_at|date:'F j, Y' }}</p>
       </div>
       <div class="flex flex-wrap items-center gap-3">
-        <div id="like-fragment">
-          {% include 'blog/partials/like_button.html' %}
-        </div>
+        {% if user.is_authenticated %}
+          <div id="like-fragment">
+            {% include 'blog/partials/like_button.html' %}
+          </div>
+        {% else %}
+          <div class="inline-flex items-center gap-2 rounded-full border border-slate-700 bg-slate-800 px-4 py-2 text-sm text-slate-100">
+            <span class="text-rose-400">♡</span>
+            <span>{{ likes_count }}</span>
+            <a href="{% url 'accounts:login' %}" class="text-slate-200 underline">Login to like</a>
+          </div>
+        {% endif %}
         {% if can_edit %}
           <a href="{% url 'blog:post_update' slug=object.slug %}" class="rounded-full border border-slate-700 px-4 py-2 text-sm text-slate-100 transition hover:border-slate-500">Edit</a>
           <a href="{% url 'blog:post_delete' slug=object.slug %}" class="rounded-full border border-rose-600 px-4 py-2 text-sm text-rose-200 transition hover:border-rose-500">Delete</a>

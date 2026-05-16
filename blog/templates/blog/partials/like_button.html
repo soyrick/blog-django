@@ -1,4 +1,7 @@
-<button hx-post="{% url 'blog:post_like' slug=post.slug %}" hx-target="#like-fragment" hx-swap="outerHTML" class="inline-flex items-center gap-2 rounded-full border border-slate-700 bg-slate-800 px-4 py-2 text-sm text-slate-100 transition hover:border-slate-500 hover:bg-slate-700">
-  <span class="text-rose-400">{% if liked %}♥{% else %}♡{% endif %}</span>
-  <span>{{ likes_count }}</span>
-</button>
+<form hx-post="{% url 'blog:post_like' slug=post.slug %}" hx-target="#like-fragment" hx-swap="outerHTML" class="inline-flex">
+  {% csrf_token %}
+  <button type="submit" class="inline-flex items-center gap-2 rounded-full border border-slate-700 bg-slate-800 px-4 py-2 text-sm text-slate-100 transition hover:border-slate-500 hover:bg-slate-700">
+    <span class="text-rose-400">{% if liked %}♥{% else %}♡{% endif %}</span>
+    <span>{{ likes_count }}</span>
+  </button>
+</form>

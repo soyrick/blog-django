@@ -1,7 +1,10 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
+from django.core.files import File
 from django.core.management.base import BaseCommand
 from django.db import transaction
+from pathlib import Path
 
 from blog.models import Comment, Like, Post
 
@@ -61,12 +64,14 @@ class Command(BaseCommand):
                     'slug': 'como-empezamos-en-la-comunidad',
                     'content': 'Bienvenido al blog comunitario. Aquí puedes compartir ideas, comentarios y likes en un estilo moderno y oscuro.',
                     'is_published': True,
+                    'cover_image_filename': 'maxresdefault.jpg',
                 },
                 {
                     'title': 'Consejos rápidos para mejorar tu perfil',
                     'slug': 'consejos-rapidos-para-mejorar-tu-perfil',
                     'content': 'Usa un correo claro, agrega una buena foto y mantén tus publicaciones cortas y atractivas.',
                     'is_published': True,
+                    'cover_image_filename': 'meca.jpg',
                 },
                 {
                     'title': 'Este post es un borrador privado',
@@ -87,6 +92,15 @@ class Command(BaseCommand):
                         'is_published': data['is_published'],
                     },
                 )
+
+                if data.get('cover_image_filename'):
+                    image_path = Path(settings.BASE_DIR) / 'core' / 'static' / 'img' / 'imagenes' / data['cover_image_filename']
+                    if image_path.exists():
+                        destination_name = f'covers/{data["cover_image_filename"]}'
+                        if not post.cover_image or post.cover_image.name != destination_name:
+                            with image_path.open('rb') as image_file:
+                                post.cover_image.save(data['cover_image_filename'], File(image_file), save=True)
+
                 created_posts.append(post)
 
             Comment.objects.get_or_create(

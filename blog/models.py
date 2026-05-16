@@ -1,11 +1,12 @@
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
+from django.utils.text import slugify
 
 
 class Post(models.Model):
     title = models.CharField(max_length=200)
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(unique=True, blank=True)
     content = models.TextField()
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='posts')
     cover_image = models.ImageField(upload_to='covers/', blank=True, null=True)
@@ -18,6 +19,20 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+
+    def _generate_unique_slug(self):
+        base_slug = slugify(self.title)
+        slug = base_slug
+        suffix = 1
+        while Post.objects.filter(slug=slug).exclude(pk=self.pk).exists():
+            slug = f'{base_slug}-{suffix}'
+            suffix += 1
+        return slug
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = self._generate_unique_slug()
+        super().save(*args, **kwargs)
 
     def get_absolute_url(self):
         return reverse('blog:post_detail', kwargs={'slug': self.slug})

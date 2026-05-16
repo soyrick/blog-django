@@ -18,3 +18,14 @@ def test_like_unique_constraint(db, user_reader, post):
     Like.objects.create(post=post, user=user_reader)
     with pytest.raises(IntegrityError):
         Like.objects.create(post=post, user=user_reader)
+
+
+def test_post_auto_generates_slug_when_blank(db, user_author):
+    post = Post.objects.create(
+        title='Post sin slug',
+        slug='',
+        content='Contenido breve',
+        author=user_author,
+        is_published=True,
+    )
+    assert post.slug == 'post-sin-slug'
